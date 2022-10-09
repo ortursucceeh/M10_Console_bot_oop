@@ -25,6 +25,8 @@ class Record:
     def remove_phone(self, rec_name, rec_phone):
         if rec_phone.phone in contacts[rec_name.name]:
             contacts[rec_name.name].remove(rec_phone.phone)
+        else:
+            raise KeyError
 
     def edit_record(self, old_rec_name, new_rec_phone):
         contacts[old_rec_name.name] = new_rec_phone.phone
