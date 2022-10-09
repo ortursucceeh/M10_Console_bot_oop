@@ -17,11 +17,17 @@ class Record:
         else:
             self.phones = []
 
-    def add_phone(self, record, new_phone):
-        record.phones = [record.phones] + [new_phone]
+    def add_phone(self, record):
+        name = record.name
+        new_phone = record.phones[0]
+        contacts[name] = contacts[name] + [new_phone]
+
         return f"Phone was added to record"
 
-    def remove_phone(self, name, removed_phone):
+    def remove_phone(self, record):
+        name = record.name
+        removed_phone = record.phones[0]
+
         # list of str phones from record.phones
         names_phones = [i.value for i in contacts[name].phones]
 
@@ -32,11 +38,6 @@ class Record:
                     return f"Phone was removed from record"
         else:
             raise KeyError("Removed phone isn't in phones")
-
-    def edit_record(self, record, new_record):
-        record.name.value = new_record.name.value
-        record.phones = new_record.phones
-        return f"Record was changed"
 
 
 class Field:
@@ -137,11 +138,6 @@ def remove_record_phone(record, removed_phone):
     record.remove_phone(record, removed_phone)
 
 
-@input_error
-def edit_record(record, new_record):
-    record.edit_record(record, new_record)
-
-
 handler = {
     "hello": lambda: "Hello! How can I help you?",
     "add": add_contact,
@@ -151,8 +147,7 @@ handler = {
     "remove": remove_contact,
     "commands": show_all_commands,
     "add_record_phone": add_record_phone,
-    "remove_record_phone": remove_record_phone,
-    "edit_record": edit_record
+    "remove_record_phone": remove_record_phone
 }
 
 
