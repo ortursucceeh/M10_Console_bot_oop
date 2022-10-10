@@ -28,10 +28,10 @@ def add_contact(name, number=None):
         raise IndexError
     elif name in contacts:
         return contacts[name].add_phone(number)
-    else:
-        record = Record(name, number)
-        contacts.add_record(record)
-        return f"Contact with name '{name}' and phone '{number}' was added."
+
+    record = Record(name, number)
+    contacts.add_record(record)
+    return f"Contact with name '{name}' and phone '{number}' was added."
 
 
 @input_error
@@ -46,8 +46,8 @@ def change_contact(name, old_number=None, new_number=None):
     if name in contacts:
         contacts[name].change_phone(old_number, new_number)
         return f"Contact's number with name '{name}' was changed to '{new_number}'."
-    else:
-        raise ValueError("Unknown name.")
+
+    raise ValueError("Unknown name.")
 
 
 @input_error
@@ -55,8 +55,8 @@ def show_all_contacts(*args):
     """Func which shows all contacts"""
     if contacts:
         return '\n'.join([f"{key} -:  {', '.join([phone.value for phone in value.phones])}" for key, value in contacts.items()])
-    else:
-        return "You don't have any contacts."
+
+    return "You don't have any contacts."
 
 
 @input_error
