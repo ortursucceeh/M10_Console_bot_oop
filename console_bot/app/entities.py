@@ -18,7 +18,7 @@ class Record:
 
     def add_phone(self, phone):
         self.phones.append(Phone(phone))
-        return f"Phone '{phone}' was added to contact '{self.name.value}'"
+        return f"New phone '{phone}' was added to contact '{self.name.value.capitalize()}'."
 
     def remove_phone(self, removed_phone):
         for phone in self.phones:
@@ -35,16 +35,13 @@ class Record:
 
 
 class Field:
-    pass
-
-
-class Name(Field):
-
     def __init__(self, value):
         self.value = value
 
 
-class Phone(Field):
+class Name(Field):
+    pass
 
-    def __init__(self, value=None):
-        self.value = value
+
+class Phone(Field):
+    pass

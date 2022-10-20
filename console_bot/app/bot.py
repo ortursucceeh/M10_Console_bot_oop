@@ -1,4 +1,5 @@
 import functools
+from art import tprint
 from entities import AdressBook, Record
 from constants import HELLO_WORDS, EXIT_WORDS
 
@@ -26,44 +27,52 @@ def add_contact(name, number=None):
     """Func which adds new contact in contacts"""
     if number is None:
         raise IndexError
-    elif name in contacts:
-        return contacts[name].add_phone(number)
+    elif name.lower() in contacts:
+        return "Contact '{name.capitalize()}'is already in adressbook.(Enter add_phone)"
 
-    record = Record(name, number)
+    record = Record(name.lower(), number)
     contacts.add_record(record)
-    return f"Contact with name '{name}' and phone '{number}' was added."
+    return f"Contact with name '{name.capitalize()}' and phone '{number}' was added."
 
 
 @input_error
 def find_contact(name, number=None):
     """Func which shows name's number"""
-    return f"{name} -: {', '.join([phone.value for phone in contacts[name].phones])}"
+    phones = [phone.value for phone in contacts[name.lower()].phones]
+    return f"{name.capitalize()} : {'; '.join(phones)}"
 
 
 @input_error
-def change_contact(name, old_number=None, new_number=None):
+def change_contact(name, new_number=None):
     """Func which changes some contact"""
-    if name in contacts:
-        contacts[name].change_phone(old_number, new_number)
-        return f"Contact's number with name '{name}' was changed to '{new_number}'."
-
+    if name.lower() in contacts:
+        del contacts[name.lower()]
+        record = Record(name.lower(), new_number)
+        contacts.add_record(record)
+        return f"Contact's number with name '{name.capitalize()}' was changed to '{new_number}'."
     raise ValueError("Unknown name.")
 
 
 @input_error
 def show_all_contacts(*args):
     """Func which shows all contacts"""
+    tprint("All contacts:", font="tarty2")
+    result = []
     if contacts:
-        return '\n'.join([f"{key} -:  {', '.join([phone.value for phone in value.phones])}" for key, value in contacts.items()])
-
+        for key, value in contacts.items():
+            if len(key) > 8:
+                key = key[:8] + '...'
+            phones = '; '.join([phone.value for phone in value.phones])
+            result.append(f"[+] {key.capitalize(): <12}: {phones}")
+        return '\n'.join(result)
     return "You don't have any contacts."
 
 
 @input_error
 def remove_contact(name, number=None):
     """Func which deletes contact"""
-    del contacts[name]
-    return f"Contact with name '{name}' was removed."
+    del contacts[name.lower()]
+    return f"Contact with name '{name.capitalize()}' was removed."
 
 
 @input_error
@@ -74,12 +83,23 @@ def show_all_commands(name=None, number=None):
 
 def remove_phone(name, phone=None):
     """Func which delete phone in record"""
-    return contacts[name].remove_phone(phone)
+    return contacts[name.lower()].remove_phone(phone)
 
 
 def change_phone(name, old_phone, new_phone):
     """Func which change phone in record"""
-    return contacts[name].change_phone(old_phone, new_phone)
+    return contacts[name.lower()].change_phone(old_phone, new_phone)
+
+
+def add_phone(name, number):
+    """Func which add phone in record"""
+    if number is None:
+        raise IndexError
+    elif name.lower() in contacts:
+        return contacts[name.lower()].add_phone(number)
+
+    record = Record(name.lower(), number)
+    contacts.add_record(record)
 
 
 handler = {
@@ -90,12 +110,14 @@ handler = {
     "show": show_all_contacts,
     "remove": remove_contact,
     "commands": show_all_commands,
+    "add_phone": add_phone,
     "remove_phone": remove_phone,
     "change_phone": change_phone
 }
 
 
 def main():
+    tprint("AdressBook", font="tarty1")
     while True:
 
         command = input("Enter command: ").lower().strip().split()
@@ -103,8 +125,9 @@ def main():
         if command[0] in EXIT_WORDS:
             print("See ya!")
             exit()
+
         elif command[0] in HELLO_WORDS:
-            print(handler["hello"])
+            print(handler["hello"]())
 
         elif command[0] in handler:
             print(handler[command[0]](*command[1:]))
