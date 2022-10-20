@@ -28,7 +28,7 @@ def add_contact(name, number=None):
     if number is None:
         raise IndexError
     elif name.lower() in contacts:
-        return "Contact '{name.capitalize()}'is already in adressbook.(Enter add_phone)"
+        return f"Contact '{name.capitalize()}' is already in adressbook! (Enter add_phone)"
 
     record = Record(name.lower(), number)
     contacts.add_record(record)
@@ -49,7 +49,7 @@ def change_contact(name, new_number=None):
         del contacts[name.lower()]
         record = Record(name.lower(), new_number)
         contacts.add_record(record)
-        return f"Contact's number with name '{name.capitalize()}' was changed to '{new_number}'."
+        return f"'{name.capitalize()}'s' number was changed to '{new_number}'."
     raise ValueError("Unknown name.")
 
 
@@ -63,7 +63,7 @@ def show_all_contacts(*args):
             if len(key) > 8:
                 key = key[:8] + '...'
             phones = '; '.join([phone.value for phone in value.phones])
-            result.append(f"[+] {key.capitalize(): <12}: {phones}")
+            result.append(f"[+] {key.capitalize(): <12}: {phones};")
         return '\n'.join(result)
     return "You don't have any contacts."
 
@@ -123,7 +123,7 @@ def main():
         command = input("Enter command: ").lower().strip().split()
 
         if command[0] in EXIT_WORDS:
-            print("See ya!")
+            tprint("Bye!", font="tarty2")
             exit()
 
         elif command[0] in HELLO_WORDS:
