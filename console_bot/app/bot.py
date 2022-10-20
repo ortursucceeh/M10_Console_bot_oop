@@ -39,7 +39,7 @@ def add_contact(name, number=None):
 def find_contact(name, number=None):
     """Func which shows name's number"""
     phones = [phone.value for phone in contacts[name.lower()].phones]
-    return f"{name.capitalize()} : {'; '.join(phones)}"
+    return f"{name.capitalize()} : {', '.join(phones)}"
 
 
 @input_error
@@ -62,8 +62,8 @@ def show_all_contacts(*args):
         for key, value in contacts.items():
             if len(key) > 8:
                 key = key[:8] + '...'
-            phones = '; '.join([phone.value for phone in value.phones])
-            result.append(f"[+] {key.capitalize(): <12}: {phones};")
+            phones = ', '.join([phone.value for phone in value.phones])
+            result.append(f"[+] {key.capitalize(): <12}: {phones}")
         return '\n'.join(result)
     return "You don't have any contacts."
 
@@ -81,25 +81,27 @@ def show_all_commands(name=None, number=None):
     return " # ".join(handler.keys())
 
 
+@input_error
 def remove_phone(name, phone=None):
     """Func which delete phone in record"""
     return contacts[name.lower()].remove_phone(phone)
 
 
+@input_error
 def change_phone(name, old_phone, new_phone):
     """Func which change phone in record"""
     return contacts[name.lower()].change_phone(old_phone, new_phone)
 
 
+@input_error
 def add_phone(name, number):
     """Func which add phone in record"""
     if number is None:
         raise IndexError
     elif name.lower() in contacts:
+        record = Record(name.lower(), number)
+        contacts.add_record(record)
         return contacts[name.lower()].add_phone(number)
-
-    record = Record(name.lower(), number)
-    contacts.add_record(record)
 
 
 handler = {

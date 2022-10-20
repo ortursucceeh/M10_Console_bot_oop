@@ -1,4 +1,6 @@
 from collections import UserDict
+from datetime import datetime
+import re
 
 
 class AdressBook(UserDict):
@@ -6,11 +8,15 @@ class AdressBook(UserDict):
     def add_record(self, record):
         self.data[record.name.value] = record
 
+    def iterator():
+        pass
+
 
 class Record:
 
-    def __init__(self, name, phone=None):
+    def __init__(self, name, phone=None, birthday=None):
         self.name = Name(name)
+        self.birthday = Birthday(birthday)
         if phone:
             self.phones = [Phone(phone)]
         else:
@@ -33,10 +39,45 @@ class Record:
                 self.phones.remove(phone)
                 return f"Phone '{old_phone}' was changed to '{new_phone}'"
 
+    def day_to_birthdays(self, birthday=None):
+        if birthday:
+            try:
+                birth = datetime.strptime(birthday, "%d.%m.%Y")
+                today = datetime.today()
+
+                if (today.month == birth.month and today.day >= birth.day or today.month > birth.month):
+                    nextBirthdayYear = today.year + 1
+                else:
+                    nextBirthdayYear = today.year
+
+                nextBirthday = datetime(
+                    nextBirthdayYear, birth.month, birth.day)
+
+                return (nextBirthday - today).days
+            except:
+                return "Wrong date"
+
 
 class Field:
     def __init__(self, value):
         self.value = value
+
+    @property
+    def value(self):
+        return self.__value
+
+    @value.setter
+    def value(self, new_value):
+        if isinstance(self, Phone):
+            if not new_value.isdigit():
+                raise ValueError("Phone must be consists only of digits")
+        elif isinstance(self, Name):
+            if not new_value.isalpha():
+                raise ValueError("Name must be consists only of letters")
+        elif isinstance(self, Birthday):
+            if not re.match(r"\d{2}\.\d{2}\.\d{4}", new_value):
+                raise ValueError("Birthday must be in 'DD.MM.YYYY' format")
+        self.__value = new_value
 
 
 class Name(Field):
@@ -44,4 +85,8 @@ class Name(Field):
 
 
 class Phone(Field):
+    pass
+
+
+class Birthday(Field):
     pass
